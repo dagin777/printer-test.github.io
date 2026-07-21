@@ -4,107 +4,94 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Тест X2H-2203</title>
+<title>X2H-2203 Bluetooth Test</title>
 
 <style>
-    * {
-        box-sizing: border-box;
-    }
+* {
+    box-sizing: border-box;
+}
 
-    body {
-        margin: 0;
-        min-height: 100vh;
-        font-family: Arial, sans-serif;
-        background: #111827;
-        color: white;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-    }
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #111827;
+    color: white;
+    padding: 20px;
+}
 
-    .container {
-        width: 100%;
-        max-width: 500px;
-        background: #1f2937;
-        border-radius: 24px;
-        padding: 25px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    }
+.container {
+    max-width: 520px;
+    margin: auto;
+    background: #1f2937;
+    border-radius: 24px;
+    padding: 25px;
+}
 
-    h1 {
-        margin-top: 0;
-        text-align: center;
-    }
+h1 {
+    text-align: center;
+}
 
-    .subtitle {
-        text-align: center;
-        color: #9ca3af;
-        margin-bottom: 25px;
-    }
+button {
+    width: 100%;
+    padding: 16px;
+    margin-top: 12px;
+    border: none;
+    border-radius: 14px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
 
-    button {
-        width: 100%;
-        padding: 16px;
-        border: none;
-        border-radius: 14px;
-        background: #2563eb;
-        color: white;
-        font-size: 17px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-bottom: 15px;
-    }
+button:disabled {
+    background: #374151;
+}
 
-    button:active {
-        transform: scale(0.98);
-    }
+.status {
+    background: #111827;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 14px;
+    word-break: break-word;
+}
 
-    .status {
-        background: #111827;
-        border-radius: 14px;
-        padding: 15px;
-        margin-top: 10px;
-        word-break: break-word;
-    }
+.info {
+    background: #064e3b;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 14px;
+    display: none;
+}
 
-    .device {
-        background: #064e3b;
-        border-radius: 14px;
-        padding: 15px;
-        margin-top: 15px;
-        display: none;
-    }
+.services {
+    background: #0f172a;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 14px;
+    display: none;
+}
 
-    .services {
-        background: #0f172a;
-        border-radius: 14px;
-        padding: 15px;
-        margin-top: 15px;
-        max-height: 300px;
-        overflow-y: auto;
-        display: none;
-    }
+.service {
+    padding: 12px 0;
+    border-bottom: 1px solid #374151;
+}
 
-    .service {
-        margin-bottom: 15px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #374151;
-    }
+.characteristic {
+    margin-top: 8px;
+    padding: 8px;
+    background: #1e293b;
+    border-radius: 8px;
+    font-size: 13px;
+}
 
-    .characteristic {
-        color: #9ca3af;
-        font-size: 14px;
-        margin-top: 5px;
-    }
+.write {
+    color: #86efac;
+}
 
-    .error {
-        color: #fca5a5;
-    }
-
-    .success {
-        color: #86efac;
-    }
+.error {
+    color: #fca5a5;
+}
 </style>
 </head>
 
@@ -112,116 +99,105 @@
 
 <div class="container">
 
-    <h1>🖨️ X2H-2203</h1>
+<h1>🖨️ X2H-2203</h1>
 
-    <div class="subtitle">
-        Тест подключения через Web Bluetooth
-    </div>
+<p>
+Тестирование Bluetooth-принтера через Web Bluetooth
+</p>
 
-    <button onclick="checkBluetooth()">
-        🔍 Проверить Bluetooth
-    </button>
+<button onclick="connectPrinter()">
+🔵 Подключить X2H-2203
+</button>
 
-    <button onclick="connectPrinter()">
-        🔵 Найти Bluetooth-принтер
-    </button>
+<button id="printButton" onclick="testPrint()" disabled>
+🖨️ Тестовая печать
+</button>
 
-    <div id="status" class="status">
-        Статус: ожидание проверки...
-    </div>
+<div id="status" class="status">
+Статус: принтер не подключён
+</div>
 
-    <div id="device" class="device">
-        <b>Устройство найдено!</b>
-        <br><br>
-        Название:
-        <span id="deviceName">Неизвестно</span>
-    </div>
+<div id="deviceInfo" class="info">
 
-    <div id="services" class="services">
-        <b>Найденные GATT-сервисы:</b>
-        <div id="servicesList"></div>
-    </div>
+<b>Устройство:</b>
+
+<div id="deviceName">
+-
+</div>
+
+<br>
+
+<b>Сервис:</b>
+
+<div id="serviceUUID">
+-
+</div>
+
+<br>
+
+<b>Характеристика:</b>
+
+<div id="characteristicUUID">
+-
+</div>
 
 </div>
+
+<div id="services" class="services">
+
+<b>Все найденные GATT-сервисы:</b>
+
+<div id="servicesList"></div>
+
+</div>
+
+</div>
+
 
 <script>
 
 let bluetoothDevice = null;
+
 let bluetoothServer = null;
 
-function setStatus(text, type = "") {
-
-    const status = document.getElementById("status");
-
-    status.className = "status " + type;
-
-    status.innerHTML = text;
-}
+let writeCharacteristic = null;
 
 
-// Проверяем поддержку Web Bluetooth
+/*
+Распространённые BLE-сервисы.
 
-async function checkBluetooth() {
+Мы добавляем их как optionalServices,
+чтобы браузер разрешил странице
+получить к ним доступ.
+*/
 
-    if (!navigator.bluetooth) {
+const possibleServices = [
 
-        setStatus(
-            "❌ Web Bluetooth недоступен.<br><br>" +
-            "Попробуй открыть эту страницу в Chrome на Android " +
-            "через HTTPS.",
-            "error"
-        );
+    // Generic Access
+    "00001800-0000-1000-8000-00805f9b34fb",
 
-        return;
-    }
+    // Generic Attribute
+    "00001801-0000-1000-8000-00805f9b34fb",
 
-    try {
+    // Battery
+    "0000180f-0000-1000-8000-00805f9b34fb",
 
-        const available =
-            await navigator.bluetooth.getAvailability();
+    // Device Information
+    "0000180a-0000-1000-8000-00805f9b34fb",
 
-        if (available) {
+    // Nordic UART Service
+    "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
 
-            setStatus(
-                "✅ Web Bluetooth доступен!<br><br>" +
-                "Теперь нажми «Найти Bluetooth-принтер».",
-                "success"
-            );
+    // HM-10
+    "0000ffe0-0000-1000-8000-00805f9b34fb",
 
-        } else {
+    // Некоторые термопринтеры
+    "0000ff00-0000-1000-8000-00805f9b34fb"
 
-            setStatus(
-                "⚠️ Bluetooth сейчас недоступен.",
-                "error"
-            );
+];
 
-        }
-
-    } catch (error) {
-
-        setStatus(
-            "⚠️ Не удалось проверить Bluetooth:<br>" +
-            error.message,
-            "error"
-        );
-
-    }
-}
-
-
-// Поиск устройства
 
 async function connectPrinter() {
-
-    if (!navigator.bluetooth) {
-
-        setStatus(
-            "❌ Этот браузер не поддерживает Web Bluetooth.",
-            "error"
-        );
-
-        return;
-    }
 
     try {
 
@@ -229,190 +205,23 @@ async function connectPrinter() {
             "🔍 Открываю выбор Bluetooth-устройства..."
         );
 
-        // Ищем все BLE-устройства.
-        // Это тестовый режим.
 
         bluetoothDevice =
             await navigator.bluetooth.requestDevice({
 
                 acceptAllDevices: true,
 
-                optionalServices: []
+                optionalServices: possibleServices
 
             });
 
 
-        document.getElementById("device").style.display = "block";
-
-        document.getElementById("deviceName").textContent =
-            bluetoothDevice.name ||
-            "Без названия";
-
-
         setStatus(
-            "✅ Устройство выбрано.<br>" +
-            "Пробуем подключиться..."
+            "🔵 Устройство выбрано.<br>" +
+            "Подключение..."
         );
 
 
-        // Проверяем, есть ли GATT
-
-        if (!bluetoothDevice.gatt) {
-
-            setStatus(
-                "⚠️ Устройство выбрано, но GATT недоступен.",
-                "error"
-            );
-
-            return;
-        }
-
-
-        // Подключаемся
-
-        bluetoothServer =
-            await bluetoothDevice.gatt.connect();
-
-
-        setStatus(
-            "✅ Подключение установлено!<br><br>" +
-            "Получаем список сервисов...",
-            "success"
-        );
-
-
-        // Получаем доступные сервисы
-
-        const services =
-            await bluetoothServer.getPrimaryServices();
-
-
-        const servicesContainer =
-            document.getElementById("services");
-
-        const servicesList =
-            document.getElementById("servicesList");
-
-
-        servicesList.innerHTML = "";
-
-
-        if (services.length === 0) {
-
-            servicesList.innerHTML =
-                "⚠️ GATT-сервисы не найдены.";
-
-        }
-
-
-        for (const service of services) {
-
-            const serviceElement =
-                document.createElement("div");
-
-            serviceElement.className =
-                "service";
-
-
-            serviceElement.innerHTML =
-                "<b>Service:</b><br>" +
-                service.uuid;
-
-
-            try {
-
-                const characteristics =
-                    await service.getCharacteristics();
-
-
-                for (const characteristic
-                    of characteristics) {
-
-                    const characteristicElement =
-                        document.createElement("div");
-
-                    characteristicElement.className =
-                        "characteristic";
-
-
-                    characteristicElement.innerHTML =
-                        "↳ Characteristic:<br>" +
-                        characteristic.uuid +
-                        "<br>" +
-                        "Свойства: " +
-                        characteristic.properties
-                            .write ? "WRITE " : "" +
-                        characteristic.properties
-                            .writeWithoutResponse
-                            ? "WRITE WITHOUT RESPONSE "
-                            : "" +
-                        characteristic.properties
-                            .read ? "READ " : "" +
-                        characteristic.properties
-                            .notify ? "NOTIFY" : "";
-
-
-                    serviceElement.appendChild(
-                        characteristicElement
-                    );
-
-                }
-
-            } catch (error) {
-
-                const errorElement =
-                    document.createElement("div");
-
-                errorElement.className =
-                    "characteristic error";
-
-                errorElement.textContent =
-                    "Не удалось получить характеристики.";
-
-                serviceElement.appendChild(
-                    errorElement
-                );
-
-            }
-
-
-            servicesList.appendChild(
-                serviceElement
-            );
-
-        }
-
-
-        servicesContainer.style.display =
-            "block";
-
-
-        setStatus(
-            "🎉 X2H-2203 подключён!<br><br>" +
-            "Теперь нам нужно посмотреть найденные " +
-            "GATT-сервисы и характеристики.",
-            "success"
-        );
-
-
-    } catch (error) {
-
-        console.error(error);
-
-
-        setStatus(
-            "❌ Ошибка подключения:<br><br>" +
-            error.name +
-            "<br>" +
-            error.message,
-            "error"
-        );
-
-    }
-
-}
-
-</script>
-
-</body>
-</html>
+        document.getElementById(
+            "deviceInfo"
+        ).style.display =
